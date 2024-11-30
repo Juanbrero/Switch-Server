@@ -32,12 +32,12 @@ public class ClientHandler extends Thread {
                     requestBuilder.append(line);
                 }
 
-                if (requestBuilder.length() > 0) {
+                if (!requestBuilder.isEmpty()) {
                     JSONObject requestJson = new JSONObject(requestBuilder.toString());
                     JSONObject responseJson = handleRequest(requestJson);
 
                     // Send response
-                    out.println(responseJson.toString());
+                    out.println(responseJson);
                     out.println();
                     System.out.println("Response sent: " + responseJson);
                 } else {
