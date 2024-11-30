@@ -14,9 +14,12 @@ public class Menu {
     public void setOp(String op) {
         switch (op) {
             case "1":
-                option = new ShowTables();
+                option = new ListDBs();
                 break;
             case "2":
+                option = new ShowTables();
+                break;
+            case "3":
                 option = new ExecuteQuery();
                 break;
             default:
@@ -27,8 +30,9 @@ public class Menu {
     }
 
     public void show() {
-        System.out.println("1. Show tables");
-        System.out.println("2. Execute query");
+        System.out.println("1. Select Database");
+        System.out.println("2. Show tables");
+        System.out.println("3. Execute query");
         System.out.println("0. Exit");
     }
 }

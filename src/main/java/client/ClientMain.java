@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class ClientMain {
@@ -40,15 +41,7 @@ public class ClientMain {
 
     private void interactWithServer() {
         boolean running = true;
-        listDatabases();
-
-        String db;
-        System.out.println("Select database (0 to exit): ");
-        db = sc.nextLine();
-
-        if (db.equals("0")) {
-            running = false;
-        }
+        String db = selectDatabase();
 
         while(running) {
 
@@ -57,11 +50,15 @@ public class ClientMain {
             String op = sc.nextLine();
 
             menu.setOp(op);
-            if (menu.getOp() != null) {
+
+            if (menu.getOp() != null && !op.equals("1")) {
 
                 JSONObject request = menu.getOp().execute(db);
                 JSONObject response = sendRequest(request);
                 System.out.println(new JSONQueryFormater().JSONToString(response));
+            }
+            else if (op.equals("1")) {
+                db = selectDatabase();
             }
             else {
                 running = false;
@@ -72,20 +69,23 @@ public class ClientMain {
 
     }
 
-    public void listDatabases() {
+    public String selectDatabase() {
 
-        JSONObject requestJson = new JSONObject();
-        requestJson.put("action", "listDatabases");
+        menu.setOp("1");
+        JSONObject response = sendRequest(menu.getOp().execute());
+        String db = null;
 
-        JSONObject responseJson = sendRequest(requestJson);
+        if (response != null && response.has("databases")) {
 
-        if (responseJson != null && responseJson.has("databases")) {
-            System.out.println("Databases:");
-            responseJson.getJSONArray("databases").forEach(db -> System.out.println(db.toString()));
+            response.getJSONArray("databases").forEach(database -> System.out.println(database.toString()));
+            System.out.println("Select database: ");
+            db = sc.nextLine();
         }
         else {
-            System.out.println("No Databases available.");
+            System.out.println("No databases available.");
         }
+
+        return db;
     }
 
     public JSONObject sendRequest(JSONObject requestJson) {
