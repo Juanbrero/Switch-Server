@@ -1,8 +1,8 @@
 package client;
 
 import client.menu.Menu;
+import client.queryFormatter.JSONQueryFormatter;
 import configLoader.ConfigLoader;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class ClientMain {
@@ -55,7 +54,7 @@ public class ClientMain {
 
                 JSONObject request = menu.getOp().execute(db);
                 JSONObject response = sendRequest(request);
-                System.out.println(new JSONQueryFormater().JSONToString(response));
+                System.out.println(new JSONQueryFormatter().JSONToString(response));
             }
             else if (op.equals("1")) {
                 db = selectDatabase();

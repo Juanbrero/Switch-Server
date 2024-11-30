@@ -1,9 +1,9 @@
-package client;
+package client.queryFormatter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class JSONQueryFormater {
+public class JSONQueryFormatter {
 
     public String JSONToString (JSONObject json) {
         String s = new String();
