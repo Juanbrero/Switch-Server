@@ -1,6 +1,7 @@
 package client;
 
 import configLoader.ConfigLoader;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -38,9 +39,46 @@ public class ClientMain {
     private void interactWithServer() {
         boolean running = true;
         listDatabases();
+        String db;
+
+        System.out.println("Select database (0 to exit): ");
+        db = sc.nextLine();
+        sc.nextLine();
+
+        if (db.equals("0")) {
+            running = false;
+        }
 
         while(running) {
 
+            System.out.println("1. Show tables");
+            System.out.println("2. Execute query");
+            System.out.println("0. Exit");
+
+            String op = sc.nextLine();
+            sc.nextLine();
+            JSONObject execQuery = new JSONObject();
+
+            switch (op) {
+                case "1":
+                    execQuery.put("action", "listTables");
+                    execQuery.put("database", db);
+                    break;
+                case "2":
+                    System.out.println("Write the query below:");
+                    String query = sc.nextLine();
+                    sc.nextLine();
+                    execQuery.put("action", "executeQuery");
+                    execQuery.put("database", db);
+                    execQuery.put("query", query);
+                    break;
+                default:
+                    running = false;
+                    break;
+            }
+
+            JSONObject response = sendRequest(execQuery);
+            printFormattedJsonResult(response);
         }
 
     }
@@ -90,9 +128,25 @@ public class ClientMain {
         return responseJson;
     }
 
-    public static void clear() {
-        for (int i = 0; i < 20; i++) {
-            System.out.println();
+    public void printFormattedJsonResult(JSONObject resultJson) {
+
+        if (resultJson.has("data")) {
+            JSONArray rows = resultJson.getJSONArray("data");
+
+            System.out.println("Query result:");
+
+            for (int i = 0; i < rows.length(); i++) {
+                JSONObject row = rows.getJSONObject(i);
+                System.out.println("Row " + (i + 1) + ":");
+
+                for (String key : row.keySet()) {
+                    System.out.println("   " + key + ": " + row.get(key));
+                }
+                System.out.println();
+            }
+
+        } else {
+            System.out.println("No results found");
         }
     }
 
