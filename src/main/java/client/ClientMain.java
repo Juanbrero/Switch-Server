@@ -16,7 +16,7 @@ public class ClientMain {
 
     private String username;
     private String password;
-    private String rol;
+    private String role;
     private final String serverIp = ConfigLoader.get("switch.ip");
     private final String serverPort = ConfigLoader.get("switch.port");
     private final Scanner sc = new Scanner(System.in);
@@ -36,6 +36,18 @@ public class ClientMain {
             out.close();
         }
 
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getRole() {
+        return role;
     }
 
     private void interactWithServer() {
@@ -79,12 +91,25 @@ public class ClientMain {
             response.getJSONArray("databases").forEach(database -> System.out.println(database.toString()));
             System.out.println("Select database: ");
             db = sc.nextLine();
+
+            System.out.println("Registration info");
+            userAuth();
         }
         else {
             System.out.println("No databases available.");
         }
 
+
         return db;
+    }
+
+    private void userAuth() {
+        System.out.println("Username: ");
+        this.username = sc.nextLine();
+        System.out.println("Password: ");
+        this.password = sc.nextLine();
+        System.out.println("Role: ");
+        this.role = sc.nextLine();
     }
 
     public JSONObject sendRequest(JSONObject requestJson) {
