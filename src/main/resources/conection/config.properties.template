@@ -1,2 +1,6 @@
 # switch.ip=0.0.0.0
 # switch.port=0000
+# firebird.ip=1.1.1.1
+# firebird.port=1111
+# firebird.path=jdbc:firebirdsql://
+# fdb_<dbname>.path=/C:/path/dbname.fdb

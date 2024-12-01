@@ -19,4 +19,9 @@ public class ConfigLoader {
     public static String get(String key) {
         return properties.getProperty(key);
     }
+
+    public static String asb() {
+
+        properties.keySet()
+    }
 }
