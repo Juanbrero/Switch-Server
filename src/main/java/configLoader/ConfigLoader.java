@@ -1,12 +1,11 @@
 package configLoader;
 
 import dbServer.engines.Engine;
-
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 public class ConfigLoader {
 
@@ -21,16 +20,28 @@ public class ConfigLoader {
     }
 
     public static String get(String key) {
+
         return properties.getProperty(key);
     }
 
-    public static String getConnectionString(Engine engine) {
+    public static List<String> getKeys(String configFile_path) {
+        Properties props = new Properties();
+        try (InputStream input = new FileInputStream(configFile_path)) {
+            props.load(input);
+        } catch (Exception e) {
+            throw new RuntimeException("Error loading config file", e);
+        }
 
-        String engineName = engine.name();
+        return new ArrayList<>(props.stringPropertyNames());
+    }
+
+    public static String getConnectionString(Engine Engine) {
+
+        String engineName = Engine.name();
         String jdbc = get(engineName + ".path");
         String ip = get(engineName + ".ip");
         String port = get(engineName + ".port");
 
-        return (jdbc + ip + ":" + port + "/");
+        return (jdbc + ip + ":" + port);
     }
 }

@@ -1,29 +1,25 @@
 package switchServer;
 
 import configLoader.ConfigLoader;
-import dbServer.SQLHandler;
-import dbServer.engines.Engine;
+import dbServer.connectors.DBHandler;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SwitchServer {
 
     private static String ip = ConfigLoader.get("switch.ip");
     private static String port = ConfigLoader.get("switch.port");
-    private static Map<Engine, SQLHandler> engines = new HashMap<>();
+    private static DBHandler dbHandler = new DBHandler();
 
-    private static void registerDatabases() {
-        //recorrer .config para registrar todas las bds
-
-
+    private static void loadDatabases() {
+        dbHandler.registerDatabases();
     }
 
     public static void main(String[] args) {
 
-        registerDatabases();
+//        ConfigLoader.getKeys(ConfigLoader.get("dbConfigFile.path")).forEach(System.out::println);
+        loadDatabases();
 
         try (ServerSocket svSocket = new ServerSocket(Integer.parseInt(port))){
             System.out.println("Switch server running on " + ip + ":" + port);

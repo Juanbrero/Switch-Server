@@ -1,45 +1,14 @@
-package dbServer;
+package dbServer.connectors;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.sql.*;
-import java.util.HashMap;
-import java.util.Map;
 
-public class SQLHandler {
+public class SQLHandler extends DBHandler{
 
-    private String user;
-    private String password;
-    private Map<String, String> databaseUrls = new HashMap<>();
-    private Connection conn;
-
-    public SQLHandler(String user, String password) {
-        this.user = user;
-        this.password = password;
-    }
-
-    public void registerDatabase(String dbName, String dbUrl) {
-        databaseUrls.put(dbName, dbUrl);
-    }
-
-    public Map<String, String> getDatabaseUrls() {
-        return databaseUrls;
-    }
-
-    public void connect(String db) throws Exception {
-        String dbUrl = databaseUrls.get(db);
-
-        if (dbUrl != null) {
-            try {
-                conn = DriverManager.getConnection(dbUrl, user, password);
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        else {
-            throw new Exception("Unregistered database " + db);
-        }
+    public SQLHandler() {
+        super();
     }
 
     public JSONObject listTables(String dbName) throws Exception {
@@ -65,7 +34,6 @@ public class SQLHandler {
         result.put("data", rows);
         return result;
     }
-
 
     public JSONObject executeQuery(String dbName, String query) throws Exception {
         String dbUrl = databaseUrls.get(dbName);

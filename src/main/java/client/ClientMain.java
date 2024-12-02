@@ -16,7 +16,6 @@ public class ClientMain {
 
     private String username;
     private String password;
-    private String role;
     private final String serverIp = ConfigLoader.get("switch.ip");
     private final String serverPort = ConfigLoader.get("switch.port");
     private final Scanner sc = new Scanner(System.in);
@@ -44,10 +43,6 @@ public class ClientMain {
 
     public String getPassword() {
         return password;
-    }
-
-    public String getRole() {
-        return role;
     }
 
     private void interactWithServer() {
@@ -108,8 +103,6 @@ public class ClientMain {
         this.username = sc.nextLine();
         System.out.println("Password: ");
         this.password = sc.nextLine();
-        System.out.println("Role: ");
-        this.role = sc.nextLine();
     }
 
     public JSONObject sendRequest(JSONObject requestJson) {
