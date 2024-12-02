@@ -13,10 +13,12 @@ public class SwitchServer {
 
     private static String ip = ConfigLoader.get("switch.ip");
     private static String port = ConfigLoader.get("switch.port");
-    private Map<Engine, SQLHandler> engines = new HashMap<>();
+    private static Map<Engine, SQLHandler> engines = new HashMap<>();
 
     private static void registerDatabases() {
-        String conn
+        //recorrer .config para registrar todas las bds
+
+
     }
 
     public static void main(String[] args) {

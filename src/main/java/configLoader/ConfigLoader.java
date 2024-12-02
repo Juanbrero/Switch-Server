@@ -1,8 +1,12 @@
 package configLoader;
 
+import dbServer.engines.Engine;
+
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Properties;
+import java.util.Set;
 
 public class ConfigLoader {
 
@@ -20,8 +24,13 @@ public class ConfigLoader {
         return properties.getProperty(key);
     }
 
-    public static String asb() {
+    public static String getConnectionString(Engine engine) {
 
-        properties.keySet()
+        String engineName = engine.name();
+        String jdbc = get(engineName + ".path");
+        String ip = get(engineName + ".ip");
+        String port = get(engineName + ".port");
+
+        return (jdbc + ip + ":" + port + "/");
     }
 }
