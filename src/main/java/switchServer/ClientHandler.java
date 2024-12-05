@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class ClientHandler extends Thread {
 
@@ -65,11 +66,18 @@ public class ClientHandler extends Thread {
         try {
 
             String action = request.getString("action");
+
             if (action.equals(Action.LISTDBS.toString())) {
                 response = listDatabases();
-                
-            } else {
-//                String dbName = request.getString("database");
+
+            }
+            else if (action.equals(Action.AUTH.toString())) {
+                String dbName = request.getString("database");
+                String user = request.getString("user");
+                String password = request.getString("password");
+                response = userAuth(dbName, user, password);
+            }
+            else {
 //                if (firebirdConnector.getDatabaseUrls().containsKey(dbName)) {
 //                    response = requestToFirebird(dbName, request);
 //                } else if (postgreSQLConnector.getDatabaseUrls().containsKey(dbName)) {
@@ -81,6 +89,15 @@ public class ClientHandler extends Thread {
             response.put("error", e.getMessage());
         }
         return response;
+    }
+
+    private JSONObject userAuth(String dbName, String user, String password) throws Exception {
+
+        String response = SwitchServer.getDbHandler().connect(dbName, user, password);
+
+        JSONObject JSONResponse = new JSONObject();
+        JSONResponse.put("data", response);
+        return JSONResponse;
     }
 
     private JSONObject listDatabases() throws Exception{

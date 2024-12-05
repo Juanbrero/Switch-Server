@@ -27,16 +27,17 @@ public class DBHandler {
 
         for (String kv : keyValueDb) {
             String[] kvSplit = kv.split("\\.");
+
             String connString = "";
             switch (kvSplit[0]) {
                 case "fdb":
-                    connString = ConfigLoader.getConnectionString(Engine.Firebird) + kvSplit[1];
+                    connString = ConfigLoader.getConnectionString(Engine.Firebird) + "/"+ ConfigLoader.get(kv);
                     break;
                 case "pg":
-                    connString = ConfigLoader.getConnectionString(Engine.PostgreSQL) + kvSplit[1];
+                    connString = ConfigLoader.getConnectionString(Engine.PostgreSQL) + "/"+ ConfigLoader.get(kv);
                     break;
                 default:
-                    connString = ConfigLoader.getConnectionString(Engine.MongoDB) + kvSplit[1];
+                    connString = ConfigLoader.getConnectionString(Engine.MongoDB) + "/"+ ConfigLoader.get(kv);
                     break;
             }
 
@@ -49,26 +50,28 @@ public class DBHandler {
         return databaseUrls;
     }
 
-    public void connect(String db) throws Exception {
+    public String connect(String db, String user, String password) throws Exception {
 
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Username:");
-        this.user = sc.nextLine();
-        System.out.println("Password:");
-        this.password = sc.nextLine();
+        String response;
+        this.user = user;
+        this.password = password;
 
         String dbUrl = databaseUrls.get(db);
 
         if (dbUrl != null) {
             try {
                 conn = DriverManager.getConnection(dbUrl, user, password);
+                response = "Connection successfully.";
             } catch (Exception e) {
+                response = "Connection error";
                 throw new RuntimeException(e);
             }
         }
         else {
-            throw new Exception("Unregistered database " + db);
+            response = "Unregistered database";
         }
+
+        return response;
     }
 
 }

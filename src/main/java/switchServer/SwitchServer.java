@@ -2,10 +2,8 @@ package switchServer;
 
 import configLoader.ConfigLoader;
 import dbServer.connectors.DBHandler;
-
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.SimpleTimeZone;
 
 public class SwitchServer {
 

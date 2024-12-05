@@ -1,5 +1,6 @@
 package client;
 
+import actions.Action;
 import client.menu.Menu;
 import client.queryFormatter.JSONQueryFormatter;
 import configLoader.ConfigLoader;
@@ -65,6 +66,7 @@ public class ClientMain {
             }
             else if (op.equals("1")) {
                 db = selectDatabase();
+
             }
             else {
                 running = false;
@@ -86,9 +88,7 @@ public class ClientMain {
             response.getJSONArray("databases").forEach(database -> System.out.println(database.toString()));
             System.out.println("Select database: ");
             db = sc.nextLine();
-
-            System.out.println("Registration info");
-            userAuth();
+            userAuth(db);
         }
         else {
             System.out.println("No databases available.");
@@ -98,11 +98,23 @@ public class ClientMain {
         return db;
     }
 
-    private void userAuth() {
-        System.out.println("Username: ");
-        this.username = sc.nextLine();
-        System.out.println("Password: ");
-        this.password = sc.nextLine();
+    private void userAuth(String dbName) {
+
+        JSONObject request = new JSONObject();;
+        request.put("action", Action.AUTH);
+        request.put("database", dbName);
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Username:");
+        String user = sc.nextLine();
+        System.out.println("Password:");
+        String password = sc.nextLine();
+
+        request.put("user", user);
+        request.put("password", password);
+        sendRequest(request);
+
     }
 
     public JSONObject sendRequest(JSONObject requestJson) {
@@ -120,7 +132,6 @@ public class ClientMain {
             while ((line = in.readLine()) != null && !line.isEmpty()) {
                 responseBuilder.append(line);
             }
-
 
             if (responseBuilder.length() > 0) {
                 responseJson = new JSONObject(responseBuilder.toString());
