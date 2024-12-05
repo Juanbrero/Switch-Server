@@ -39,5 +39,4 @@ build/
 
 ############################################################
 
-src/main/resources/conection/config.properties
-src/main/resources/conection/dbConfig.properties
+src/main/resources/conection/config/

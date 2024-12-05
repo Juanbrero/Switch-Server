@@ -23,21 +23,23 @@ public class DBHandler {
 
     public void registerDatabases() {
 
-        List<String> keyValueDb = ConfigLoader.getKeys(ConfigLoader.get("dbConfigFile.path"));
+        String dbConfigFilePath = ConfigLoader.get("dbConfigFile.path");
+        List<String> keyValueDb = ConfigLoader.getKeys(dbConfigFilePath);
 
         for (String kv : keyValueDb) {
             String[] kvSplit = kv.split("\\.");
 
             String connString = "";
+
             switch (kvSplit[0]) {
                 case "fdb":
-                    connString = ConfigLoader.getConnectionString(Engine.Firebird) + "/"+ ConfigLoader.get(kv);
+                    connString = ConfigLoader.getConnectionString(Engine.Firebird) + ConfigLoader.get(kv, dbConfigFilePath);
                     break;
                 case "pg":
-                    connString = ConfigLoader.getConnectionString(Engine.PostgreSQL) + "/"+ ConfigLoader.get(kv);
+                    connString = ConfigLoader.getConnectionString(Engine.PostgreSQL) + ConfigLoader.get(kv, dbConfigFilePath);
                     break;
                 default:
-                    connString = ConfigLoader.getConnectionString(Engine.MongoDB) + "/"+ ConfigLoader.get(kv);
+                    connString = ConfigLoader.getConnectionString(Engine.MongoDB) + ConfigLoader.get(kv, dbConfigFilePath);
                     break;
             }
 

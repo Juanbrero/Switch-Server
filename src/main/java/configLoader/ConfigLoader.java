@@ -9,30 +9,40 @@ import java.util.Properties;
 
 public class ConfigLoader {
 
-    private static Properties properties = new Properties();
+    private static Properties gralConfigProps = new Properties();
+    private static Properties dbProps = new Properties();
 
     static {
-        try (InputStream input = new FileInputStream("src/main/resources/conection/config.properties")) {
-            properties.load(input);
+        try (InputStream input = new FileInputStream("src/main/resources/conection/config/config.properties")) {
+            gralConfigProps.load(input);
         } catch (Exception e) {
             throw new RuntimeException("Error loading config file", e);
         }
     }
 
-    public static String get(String key) {
+    public static String get (String key) {
+        return gralConfigProps.getProperty(key);
+    }
 
-        return properties.getProperty(key);
+    public static String get(String key, String configFile_path) {
+
+        try (InputStream input = new FileInputStream(configFile_path)) {
+            dbProps.load(input);
+            return dbProps.getProperty(key);
+        } catch (Exception e) {
+            throw new RuntimeException("Error loading config file", e);
+        }
     }
 
     public static List<String> getKeys(String configFile_path) {
-        Properties props = new Properties();
+
         try (InputStream input = new FileInputStream(configFile_path)) {
-            props.load(input);
+            dbProps.load(input);
         } catch (Exception e) {
             throw new RuntimeException("Error loading config file", e);
         }
 
-        return new ArrayList<>(props.stringPropertyNames());
+        return new ArrayList<>(dbProps.stringPropertyNames());
     }
 
     public static String getConnectionString(Engine Engine) {

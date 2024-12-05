@@ -22,6 +22,12 @@
             <version>20210307</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.firebirdsql.jdbc</groupId>
+            <artifactId>jaybird</artifactId>
+            <version>4.0.10.java11</version>
+        </dependency>
+
     </dependencies>
 
 </project>
