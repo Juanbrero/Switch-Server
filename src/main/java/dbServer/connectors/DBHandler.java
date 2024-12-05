@@ -45,7 +45,7 @@ public class DBHandler {
         }
     }
 
-    public Map<String, String> getDatabaseUrls() {
+    public Map<String, String> getDatabases() {
         return databaseUrls;
     }
 

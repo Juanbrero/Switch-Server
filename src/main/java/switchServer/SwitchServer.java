@@ -5,18 +5,40 @@ import dbServer.connectors.DBHandler;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.SimpleTimeZone;
 
 public class SwitchServer {
 
-    private static String ip = ConfigLoader.get("switch.ip");
-    private static String port = ConfigLoader.get("switch.port");
-    private static DBHandler dbHandler = new DBHandler();
+    private static String ip;
+    private static String port;
+    private static DBHandler dbHandler;
+    private static SwitchServer instance = null;
+
+    private SwitchServer () {
+        ip = ConfigLoader.get("switch.ip");
+        port = ConfigLoader.get("switch.port");
+        dbHandler = new DBHandler();
+
+    }
+
+    public static SwitchServer getInstance() {
+        if (SwitchServer.instance == null) {
+            SwitchServer.instance = new SwitchServer();
+        }
+        return SwitchServer.instance;
+    }
+
+    public static DBHandler getDbHandler() {
+        return dbHandler;
+    }
 
     private static void loadDatabases() {
         dbHandler.registerDatabases();
     }
 
     public static void main(String[] args) {
+
+        SwitchServer sServer = getInstance();
 
 //        ConfigLoader.getKeys(ConfigLoader.get("dbConfigFile.path")).forEach(System.out::println);
         loadDatabases();
