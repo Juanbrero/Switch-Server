@@ -38,7 +38,6 @@ public class SwitchServer {
 
         SwitchServer sServer = getInstance();
 
-//        ConfigLoader.getKeys(ConfigLoader.get("dbConfigFile.path")).forEach(System.out::println);
         loadDatabases();
 
         try (ServerSocket svSocket = new ServerSocket(Integer.parseInt(port))){

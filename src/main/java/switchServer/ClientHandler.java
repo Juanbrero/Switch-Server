@@ -77,7 +77,10 @@ public class ClientHandler extends Thread {
                 String password = request.getString("password");
                 response = userAuth(dbName, user, password);
             }
-            else {
+            else if (action.equals(Action.SHOWTABLES.toString())){
+                String dbName = request.getString("database");
+                response = showTables(dbName);
+
 //                if (firebirdConnector.getDatabaseUrls().containsKey(dbName)) {
 //                    response = requestToFirebird(dbName, request);
 //                } else if (postgreSQLConnector.getDatabaseUrls().containsKey(dbName)) {
@@ -90,6 +93,24 @@ public class ClientHandler extends Thread {
         }
         return response;
     }
+
+    ///////////////////////////////////////////////////////////////////////////////
+
+//    private JSONObject requestToFirebird(String dbName, JSONObject request) throws Exception {
+//        String action = request.getString("action");
+//        JSONObject response = null;
+//        // Ejecutar la operación según el tipo de acción
+//        if (action.equalsIgnoreCase("listTables")) {
+//            response = firebirdConnector.listTables(dbName);
+//        } else if (action.equalsIgnoreCase("executeQuery")) {
+//            String query = request.getString("query");
+//            response = firebirdConnector.executeQuery(dbName, query);
+//        } else System.err.println("Acción no soportada: " + action);
+//
+//        return response;
+//    }
+
+    /////////////////////////////////////////////////////////////////////////////////
 
     private JSONObject userAuth(String dbName, String user, String password) throws Exception {
 
@@ -118,5 +139,9 @@ public class ClientHandler extends Thread {
         }
 
         return response;
+    }
+
+    private JSONObject showTables(String dbName) throws Exception {
+        return SwitchServer.getDbHandler().getTables(dbName);
     }
 }
