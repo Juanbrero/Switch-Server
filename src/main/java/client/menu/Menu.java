@@ -5,6 +5,7 @@ public class Menu {
     private Option option;
 
     public Menu() {
+        setOp("1");
     }
 
     public Option getOp() {

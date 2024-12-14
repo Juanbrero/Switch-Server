@@ -79,7 +79,6 @@ public class ClientMain {
 
     public String selectDatabase() {
 
-        menu.setOp("1");
         JSONObject response = sendRequest(menu.getOp().execute());
         String db = null;
 

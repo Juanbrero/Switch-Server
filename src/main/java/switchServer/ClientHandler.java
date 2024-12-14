@@ -10,16 +10,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.sql.Statement;
 import java.util.Scanner;
 
 public class ClientHandler extends Thread {
 
     private final Socket clientSocket;
-    private final SwitchServer sServer;
 
     public ClientHandler (Socket clientSocket) {
         this.clientSocket = clientSocket;
-        this.sServer = SwitchServer.getInstance();
+
     }
 
     @Override
@@ -80,12 +80,11 @@ public class ClientHandler extends Thread {
             else if (action.equals(Action.SHOWTABLES.toString())){
                 String dbName = request.getString("database");
                 response = showTables(dbName);
-
-//                if (firebirdConnector.getDatabaseUrls().containsKey(dbName)) {
-//                    response = requestToFirebird(dbName, request);
-//                } else if (postgreSQLConnector.getDatabaseUrls().containsKey(dbName)) {
-//                    response = requestToPostgreSQL(dbName, request);
-//                } else System.err.println("Base de datos no registrada: " + dbName);
+            }
+            else {
+                String dbName = request.getString("database");
+                String query = request.getString("query");
+                response = executeQuery(dbName, query);
             }
         } catch (Exception e) {
             response.put("status", "error");
@@ -94,23 +93,21 @@ public class ClientHandler extends Thread {
         return response;
     }
 
-    ///////////////////////////////////////////////////////////////////////////////
+    public JSONObject executeQuery(String dbName, String query) throws Exception {
 
-//    private JSONObject requestToFirebird(String dbName, JSONObject request) throws Exception {
-//        String action = request.getString("action");
-//        JSONObject response = null;
-//        // Ejecutar la operación según el tipo de acción
-//        if (action.equalsIgnoreCase("listTables")) {
-//            response = firebirdConnector.listTables(dbName);
-//        } else if (action.equalsIgnoreCase("executeQuery")) {
-//            String query = request.getString("query");
-//            response = firebirdConnector.executeQuery(dbName, query);
-//        } else System.err.println("Acción no soportada: " + action);
-//
-//        return response;
-//    }
+        JSONObject result = new JSONObject();
 
-    /////////////////////////////////////////////////////////////////////////////////
+        boolean isSelect = query.trim().toUpperCase().startsWith("SELECT");
+
+        if (isSelect) {
+            result = SwitchServer.getDbHandler().executeQuery(dbName,query);
+        }
+        else {
+            result = SwitchServer.getDbHandler().executeUpdate(dbName, query);
+        }
+
+        return result;
+    }
 
     private JSONObject userAuth(String dbName, String user, String password) throws Exception {
 
@@ -128,8 +125,9 @@ public class ClientHandler extends Thread {
 
         if (!SwitchServer.getDbHandler().getDatabases().isEmpty()) {
 
-            for (String db : SwitchServer.getDbHandler().getDatabases().keySet()) {
-                dbs.put(db);
+            for (String db : SwitchServer.getDbHandler().getDbEngine().keySet()) {
+                String engine = SwitchServer.getDbHandler().getDbEngine().get(db).toString();
+                dbs.put(engine + " --> " + db);
             }
             response = new JSONObject();
             response.put("databases", dbs);

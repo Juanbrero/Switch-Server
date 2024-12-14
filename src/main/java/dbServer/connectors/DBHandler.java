@@ -4,6 +4,7 @@ import configLoader.ConfigLoader;
 import dbServer.engines.Engine;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import switchServer.SwitchServer;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -54,6 +55,10 @@ public class DBHandler {
 
     public Map<String, String> getDatabases() {
         return databaseUrls;
+    }
+
+    public Map<String, Engine> getDbEngine() {
+        return dbEngine;
     }
 
     public String connect(String db, String user, String password) throws Exception {
@@ -121,6 +126,59 @@ public class DBHandler {
         else {
             throw new Exception("Database " + dbName + " no registered.");
         }
+    }
+
+    public JSONObject executeQuery(String dbName, String query) throws Exception {
+        String dbUrl = SwitchServer.getDbHandler().getDatabases().get(dbName);
+
+        if (dbUrl != null) {
+
+            JSONObject result = new JSONObject();
+            JSONArray rows = new JSONArray();
+
+            Statement stmt = conn.createStatement();
+
+            try (ResultSet rs = stmt.executeQuery(query)) {
+                ResultSetMetaData metaData = rs.getMetaData();
+                int columnCount = metaData.getColumnCount();
+
+                while (rs.next()) {
+                    JSONObject row = new JSONObject();
+                    for (int i = 1; i <= columnCount; i++) {
+                        row.put(metaData.getColumnName(i), rs.getObject(i));
+                    }
+                    rows.put(row);
+                }
+            }
+            result.put("data", rows);
+
+            System.out.println(result);
+            return result;
+        }
+        else {
+            throw new Exception("Unregistered database: " + dbName);
+        }
+    }
+
+    public JSONObject executeUpdate(String dbName, String query) throws Exception {
+        String dbUrl = SwitchServer.getDbHandler().getDatabases().get(dbName);
+
+        if (dbUrl != null) {
+
+            JSONObject result = new JSONObject();
+            Statement stmt = conn.createStatement();
+
+            int affectedRows = stmt.executeUpdate(query);
+            result.put("affectedRows", affectedRows);
+
+            System.out.println(result);
+
+            return result;
+        }
+        else {
+            throw new Exception("Unregistered database: " + dbName);
+        }
+
     }
 
 }
