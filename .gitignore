@@ -37,6 +37,6 @@ build/
 ### Mac OS ###
 .DS_Store
 
-############################################################
+### Connection Config ###
 
-src/main/resources/conection/config/
+/src/main/resources/connection/config/

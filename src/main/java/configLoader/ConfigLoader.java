@@ -13,7 +13,7 @@ public class ConfigLoader {
     private static Properties dbProps = new Properties();
 
     static {
-        try (InputStream input = new FileInputStream("src/main/resources/conection/config/config.properties")) {
+        try (InputStream input = new FileInputStream("src/main/resources/connection/config/config.properties")) {
             gralConfigProps.load(input);
         } catch (Exception e) {
             throw new RuntimeException("Error loading config file", e);

@@ -15,9 +15,10 @@ public class JSONQueryFormatter {
 
             for (int i = 0; i < rows.length(); i++) {
                 JSONObject row = rows.getJSONObject(i);
+                s = s + "Row " + (i + 1) + ":\n";
 
                 for (String key : row.keySet()) {
-                    s = s + row.get(key) + "\n";
+                    s = s + "   " + key + ": " + row.get(key) + "\n";
                 }
 
             }
