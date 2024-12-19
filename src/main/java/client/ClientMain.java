@@ -6,10 +6,7 @@ import client.queryFormatter.JSONQueryFormatter;
 import configLoader.ConfigLoader;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -46,30 +43,31 @@ public class ClientMain {
         return password;
     }
 
-    private void interactWithServer() {
-        boolean running = true;
+    private void interactWithServer() throws Exception {
+
         String db = selectDatabase();
 
-        while(running) {
+        while(true) {
 
             menu.show();
 
-            String op = sc.nextLine();
+            int op = sc.nextInt();
+            sc.nextLine();
 
-            menu.setOp(op);
+            menu.setOption(op);
 
-            if (menu.getOp() != null && !op.equals("1")) {
+            if (op != 0 && op != 1) {
 
-                JSONObject request = menu.getOp().execute(db);
+                JSONObject request = menu.getOp().execute();
+                request.put("database", db);
                 JSONObject response = sendRequest(request);
                 System.out.println(new JSONQueryFormatter().JSONToString(response));
             }
-            else if (op.equals("1")) {
+            else if (op == 1) {
                 db = selectDatabase();
 
             }
             else {
-                running = false;
                 break;
             }
 
@@ -85,6 +83,7 @@ public class ClientMain {
         if (response != null && response.has("databases")) {
 
             response.getJSONArray("databases").forEach(database -> System.out.println(database.toString()));
+
             System.out.println("Select database: ");
             db = sc.nextLine();
             userAuth(db);
@@ -98,6 +97,12 @@ public class ClientMain {
     }
 
     private void userAuth(String dbName) {
+
+        try {
+            menu.setOption(4);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
 
         JSONObject request = new JSONObject();;
         request.put("action", Action.AUTH);
@@ -144,7 +149,7 @@ public class ClientMain {
         return responseJson;
     }
 
-    public static void main (String[] args) {
+    public static void main (String[] args) throws Exception {
 
         ClientMain client = new ClientMain();
         System.out.println("\nConnecting to server...");

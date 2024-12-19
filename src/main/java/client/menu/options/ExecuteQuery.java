@@ -1,4 +1,4 @@
-package client.menu;
+package client.menu.options;
 
 import actions.Action;
 import org.json.JSONObject;
@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class ExecuteQuery implements Option {
 
     @Override
-    public JSONObject execute(String db) {
+    public JSONObject execute() {
         Scanner sc = new Scanner(System.in);
         JSONObject execQuery = new JSONObject();
 
@@ -16,15 +16,9 @@ public class ExecuteQuery implements Option {
         String query = sc.nextLine();
 
         execQuery.put("action", Action.EXECQUERY);
-        execQuery.put("database", db);
         execQuery.put("query", query);
 
         return execQuery;
     }
 
-    @Override
-    public JSONObject execute() {
-        /* No action */
-        return null;
-    }
 }

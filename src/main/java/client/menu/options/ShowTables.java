@@ -1,4 +1,4 @@
-package client.menu;
+package client.menu.options;
 
 import actions.Action;
 import org.json.JSONObject;
@@ -6,17 +6,11 @@ import org.json.JSONObject;
 public class ShowTables implements Option {
 
     @Override
-    public JSONObject execute(String db) {
+    public JSONObject execute() {
         JSONObject execQuery = new JSONObject();
         execQuery.put("action", Action.SHOWTABLES);
-        execQuery.put("database", db);
 
         return execQuery;
     }
 
-    @Override
-    public JSONObject execute() {
-        /* No Action */
-        return null;
-    }
 }
