@@ -1,6 +1,5 @@
 package client;
 
-import actions.Action;
 import client.menu.Menu;
 import client.queryFormatter.JSONQueryFormatter;
 import configLoader.ConfigLoader;
@@ -104,19 +103,9 @@ public class ClientMain {
             e.printStackTrace();
         }
 
-        JSONObject request = new JSONObject();;
-        request.put("action", Action.AUTH);
+        JSONObject request = menu.getOp().execute();
         request.put("database", dbName);
 
-        Scanner sc = new Scanner(System.in);
-
-        System.out.println("Username:");
-        String user = sc.nextLine();
-        System.out.println("Password:");
-        String password = sc.nextLine();
-
-        request.put("user", user);
-        request.put("password", password);
         sendRequest(request);
 
     }
